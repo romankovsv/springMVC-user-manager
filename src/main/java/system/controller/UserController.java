@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import system.model.User;
 import system.service.UserService;
+import system.service.ValidateUserService;
 
 import java.util.List;
-
-
 
 @Controller
 @RequestMapping("/users")
@@ -20,9 +19,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ValidateUserService validateUserService;
+
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public @ResponseBody
-    List<User> getAllUsers() {
+    public @ResponseBody List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
@@ -36,9 +37,6 @@ public class UserController {
 
     @RequestMapping(value = "/check", method = RequestMethod.POST)
     public @ResponseBody String checkUser(@ModelAttribute("userFromServer") User user) {
-        if ("admin".equals(user.getName()) && "admin".equals(user.getPassword())) {
-            return "valid";
-        }
-        return "invalid";
+        return validateUserService.validateUser(user);
     }
 }
